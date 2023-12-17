@@ -21,6 +21,11 @@ jobs:
       with:
         dotnet-version: 7.0.x
 
+    - name: Install ZeroQL CLI
+      run: |
+        dotnet tool install --global ZeroQL.CLI
+        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
     - name: Build
       shell: bash
       run: dotnet build --configuration $BuildConfiguration
