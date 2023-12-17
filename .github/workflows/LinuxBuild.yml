@@ -23,4 +23,7 @@ jobs:
 
     - name: Build
       shell: bash
-      run: dotnet build --configuration $BuildConfiguration
+      run: |
+        dotnet tool restore
+        dotnet build --configuration $BuildConfiguration
+        
