@@ -23,4 +23,8 @@ jobs:
 
     - name: Build
       shell: bash
-      run: dotnet build --configuration $BuildConfiguration
+      run: |
+        cd Integration.BaseSchema.ClientCodeGeneration
+        dotnet tool restore
+        dotnet build --configuration $BuildConfiguration
+        
