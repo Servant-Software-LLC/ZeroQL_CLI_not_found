@@ -24,6 +24,7 @@ jobs:
     - name: Build
       shell: bash
       run: |
+        cd ZeroQL_CLI_not_found
         dotnet tool restore
         dotnet build --configuration $BuildConfiguration
         
