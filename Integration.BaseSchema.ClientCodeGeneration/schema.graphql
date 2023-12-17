@@ -1,0 +1,4094 @@
+schema {
+  query: Queries
+  mutation: Mutations
+}
+
+type AddAlgorithmOut {
+  successful: Boolean!
+  failureReason: String!
+}
+
+type BooleanAlgorithm {
+  random: RandomBoolean
+}
+
+type BooleanDataType {
+  algorithm: BooleanAlgorithm
+  nullable: Boolean!
+}
+
+type Column {
+  name: String!
+  iD: String
+  dataType: DataType!
+}
+
+type ColumnInfo {
+  name: String!
+  table: TableInfo!
+}
+
+type ColumnRef {
+  columnName: String
+}
+
+type ConfigureServerOut {
+  settings: UpdateSettingsOut
+  algorithms: AddAlgorithmOut
+  schema: ExtendSchemaOut
+}
+
+"Represents a DataColumn in the GraphQL API."
+type DataColumnInfo {
+  columnName: String
+  dataType: String
+  isEnum: Boolean!
+}
+
+"Represents a DataRow in the GraphQL API."
+type DataRowInfo {
+  items: [DataRowItem!]!
+}
+
+"Represents a value in a DataRow. If the DataColumnInfo associated with this value indicates that this is an enum type, then Value will be a string data type of the enum value represented."
+type DataRowItem {
+  value: Any
+}
+
+type DataType {
+  string: StringDataType
+  boolean: BooleanDataType
+  integer: IntegerDataType
+  uuid: UuidDataType
+  float: FloatDataType
+  dateOnly: DateOnlyDataType
+  dateTime: DateTimeDataType
+  decimal: DecimalDataType
+  gender: GenderDataType
+  timeOnly: TimeOnlyDataType
+  timeSpan: TimeSpanDataType
+  timeSeries: TimeSeriesDataType
+  foreignValue: ForeignValueDataType
+}
+
+type Database {
+  name(name: String = "MockDB"): String!
+  seed(seed: Boolean! = true): Int
+  tables: [Table!]
+  renamesDontChangeGeneratedData: Boolean!
+}
+
+type DatabaseInfo {
+  name: String!
+}
+
+type DateOnlyAlgorithm {
+  fromValues: RandomDateOnlyFromValues
+  random: RandomDateOnly
+  future: RandomFutureDateOnly
+  past: RandomPastDateOnly
+  recent: RandomRecentDateOnly
+  soon: RandomSoonDateOnly
+}
+
+type DateOnlyDataType {
+  algorithm: DateOnlyAlgorithm
+  nullable: Boolean!
+}
+
+type DateTimeAlgorithm {
+  random: RandomDateTime
+  fromValues: RandomDateTimeFromValues
+  incrementing: IncrementingDateTime
+  future: RandomFutureDateTime
+  past: RandomPastDateTime
+  recent: RandomRecentDateTime
+  soon: RandomSoonDateTime
+}
+
+type DateTimeDataType {
+  algorithm: DateTimeAlgorithm
+  nullable: Boolean!
+}
+
+type DecimalAlgorithm {
+  randomAmount: RandomAmount
+}
+
+type DecimalDataType {
+  algorithm: DecimalAlgorithm
+  nullable: Boolean!
+}
+
+type ExtendSchemaOut {
+  successful: Boolean!
+  failureReason: String!
+}
+
+type FloatAlgorithm {
+  random: RandomFloat
+  fromValues: RandomFloatFromValues
+  incrementingFloat: IncrementingFloat
+}
+
+type FloatDataType {
+  algorithm: FloatAlgorithm
+  nullable: Boolean!
+}
+
+type ForeignTableColumn {
+  "Name of remote table from which to pull foreign values from."
+  tableName: String!
+  "Name of column in the remote table from which to pull foreign values from."
+  columnName: String!
+}
+
+type ForeignValueAlgorithm {
+  sequential: SequentialForeignValue
+  random: RandomForeignValue
+}
+
+type ForeignValueDataType {
+  nullable: Boolean!
+  algorithm: ForeignValueAlgorithm!
+}
+
+"Converts the value of columns to strings based on the Format property specified to create a concatenated string value for this column."
+type FormattedString {
+  "Replaces one or more format items in a string with the string representation of the columns specified. Uses the same syntax as the String.Format Method of the .NET Framework."
+  format: String!
+  "References to the other columns which are used by the 'Format' property to build this column's value."
+  columns: [ColumnRef!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+type GenderAlgorithm {
+  random: RandomGender
+  fromValues: RandomGenderFromValues
+}
+
+type GenderDataType {
+  algorithm: GenderAlgorithm
+  nullable: Boolean!
+}
+
+type GenderRefValue {
+  columnName: String
+  value: Gender
+}
+
+type GeneralSettings {
+  defaultDatabaseName: String
+  seedDatabases: Boolean!
+  caseSensitive: Boolean!
+}
+
+"Provides a DateTime value that starts at a value and increments for each row in the table."
+type IncrementingDateTime {
+  "Value that is used for the very first row of the table. Defaults is DateTime.Now."
+  start: DateTime
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1 minute."
+  increment: TimeSpan!
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int!
+  "Noise property randomly add a factor of noise to each sample value. Defaults is 0."
+  noise: Float!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides a float value that starts at a value and increments for each row in the table."
+type IncrementingFloat {
+  "Value that is used for the very first row of the table. Defaults is 1."
+  start: Float!
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1."
+  increment: Float!
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int!
+  "Noise property randomly add a factor of noise to each sample value. Defaults is 0."
+  noise: Float!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides an interger value that starts at a value and increments for each row in the table."
+type IncrementingInteger {
+  "Value that is used for the very first row of the table. Defaults is 1."
+  start: Int!
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1."
+  increment: Int!
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+type IntegerAlgorithm {
+  random: RandomInteger
+  fromValues: RandomIntegerFromValues
+  incrementing: IncrementingInteger
+  index: RowIndex
+}
+
+type IntegerDataType {
+  algorithm: IntegerAlgorithm
+  nullable: Boolean!
+}
+
+type IntrinsicPrimaryKey {
+  showAsColumn: Boolean!
+  rows: Int!
+  rowsRange: Int!
+}
+
+type MockTable {
+  name: String!
+  iD: String
+  primaryKey: PrimaryKey!
+  columns: [Column!]!
+  seed: Int
+}
+
+type Mutations {
+  configureServer(configureServer: ConfigureServerInInput): ConfigureServerOut
+  extendSchema(schemaDescription: ExtendSchemaInInput): ExtendSchemaOut
+  updateSettings(settings: UpdateSettingsInInput): UpdateSettingsOut
+  addAlgorithm(algorithm: AlgorithmDefinitionInput): AddAlgorithmOut
+}
+
+type PrimaryKey {
+  intrinsic: IntrinsicPrimaryKey
+  timeBased: TimeBasedPrimaryKey
+}
+
+type Queries {
+  database(where: DatabaseInfoFilterInput order: [DatabaseInfoSortInput!]): [DatabaseInfo]
+  tables(where: TableInfoFilterInput order: [TableInfoSortInput!]): [TableInfo]
+  columns(where: ColumnInfoFilterInput order: [ColumnInfoSortInput!]): [ColumnInfo]
+  executeSqlQuery(defaultDatabase: String sqlStatement: String parameters: [MockDBParameterInInput]): SqlQueryResultInfo
+  settings: Settings
+}
+
+"Returns an abbreviation."
+type RandomAbbreviation {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get an account name. Like \"savings\", \"checking\", \"Home Loan\" etc.."
+type RandomAccountName {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get an account number. Default length is 8 digits."
+type RandomAccountNumber {
+  "The length of the account number. Default is 8."
+  length: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Returns a adjective."
+type RandomAdjective {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random amount. Default 0.00 - 1000.00."
+type RandomAmount {
+  "Min value. Default 0.00"
+  min: Decimal!
+  "Max value. Default 1000.00"
+  max: Decimal!
+  "Decimal places. Default 2."
+  decimals: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random GCM registration ID."
+type RandomAndroidID {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random Apple Push Token."
+type RandomApplePush {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates Bank Identifier Code (BIC) code."
+type RandomBIC {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random company BS phrase."
+type RandomBSPhrase {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random Bitcoin address."
+type RandomBitcoinAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random BlackBerry Device PIN."
+type RandomBlackBerryPIN {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides a random boolean value"
+type RandomBoolean {
+  "Percent chance, 0.0 through 1.0, of a true. Defaults is 0.5"
+  percentTrue: Float!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random building number."
+type RandomBuildingNumber {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a cardinal direction. IE: North, South, E, W."
+type RandomCardinalDirection {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random catch phrase."
+type RandomCatchPhrase {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a collection of random product categories."
+type RandomCategories {
+  "The amount of categories to be generated."
+  count: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random city."
+type RandomCity {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random city prefix."
+type RandomCityPrefix {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random city suffix."
+type RandomCitySuffix {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a collation."
+type RandomCollation {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a column name."
+type RandomColumnName {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a column type."
+type RandomColumnType {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random color."
+type RandomCommerceColor {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a commonly used file extension."
+type RandomCommonFileExtension {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random file name with a common file extension."
+type RandomCommonFileName {
+  "The extension to be used for a file name."
+  fileExtension: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a commonly used file type."
+type RandomCommonFileType {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random company name."
+type RandomCompanyName {
+  "0: name + suffix, 1: name - name, 2: name, name and name."
+  formatIndex: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random company suffix. \"Inc\" and \"LLC\" etc."
+type RandomCompanySuffix {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random country."
+type RandomCountry {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random ISO 3166-1 country code."
+type RandomCountryCode {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random county."
+type RandomCounty {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generate a credit card CVV."
+type RandomCreditCardCVV {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generate a random credit card number with valid Luhn checksum."
+type RandomCreditCardNumber {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random currency."
+type RandomCurrency {
+  "Currency value to return."
+  currencyType: CurrencyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a SVG data URI image with a specific width and height."
+type RandomDataUri {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "An html color in named format 'grey', RGB format 'rgb(r,g,b)', or hex format '#888888'."
+  hTMLColor: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random DateOnly between Start and End."
+type RandomDateOnly {
+  "Start date."
+  start: Date
+  "End date."
+  end: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random date from the values provided."
+type RandomDateOnlyFromValues {
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfDateOnly!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random date\/time value"
+type RandomDateTime {
+  "The start date\/time to generate random values past."
+  start: DateTime
+  "The end date\/time to generate random values before."
+  end: DateTime
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random date and time from the values provided."
+type RandomDateTimeFromValues {
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfDateTime!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random commerce department."
+type RandomDepartment {
+  "The maximum amount of departments"
+  max: Int!
+  "If true the method returns the max amount of values, otherwise the number of categories returned is between 1 and max."
+  returnMax: Boolean!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a cardinal or ordinal direction. IE: Northwest, South, SW, E."
+type RandomDirection {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random Unix directory path."
+type RandomDirectoryPath {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random domain name."
+type RandomDomainName {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random Ean-13 barcode number"
+type RandomEan13BarcodeNumber {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random Ean8 barcode number"
+type RandomEan8BarcodeNumber {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random email"
+type RandomEmail {
+  "Always use this first name in generating the random email address."
+  firstName: StringRefValue
+  "Sometimes used depending on randomness. See 'UserName' algorithm."
+  lastName: StringRefValue
+  "Email is composed with this provider."
+  provider: StringRefValue
+  "This parameter is appended to the email account just before the @ symbol. This is useful for situations where you might have a unique email constraint in your database or application."
+  uniqueSuffix: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a storage engine."
+type RandomEngine {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random Ethereum address."
+type RandomEthereumAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates an example email ending with @example.com"
+type RandomExampleEmail {
+  "Optional: first name of the user."
+  firstName: StringRefValue
+  "Optional: last name of the user."
+  lastName: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random `Exception` with a fake stack trace."
+type RandomException {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random extension for the given mime type."
+type RandomFileExtension {
+  "Mime Type for the extension to be generated"
+  mimeType: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random file name."
+type RandomFileName {
+  "The extension the file name will have."
+  fileExtension: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random Unix file path."
+type RandomFilePath {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a file type available as mime-type."
+type RandomFileType {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a full name."
+type RandomFindName {
+  "Use this first name."
+  firstName: StringRefValue
+  "Use this last name."
+  lastName: StringRefValue
+  "Add a prefix?"
+  usePrefix: Boolean!
+  "Add a suffix?"
+  useSuffix: Boolean!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random first name."
+type RandomFirstName {
+  "Generates a random first name based on the gender."
+  gender: GenderRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random float value."
+type RandomFloat {
+  "Lower bound, inclusive. Defaults is 0.0."
+  min: Float!
+  "Upper bound, inclusive. Default is 1.0."
+  max: Float!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random float from the values provided."
+type RandomFloatFromValues {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfSingle!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Retreives a random foreign value from the remote table."
+type RandomForeignValue {
+  foreignTableColumn: ForeignTableColumn!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a vehicle fuel type. IE: Electric, Gasoline, Diesel."
+type RandomFuel {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random full address like Street, City, Country."
+type RandomFullAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a full name by concating a FirstName and a LastName."
+type RandomFullName {
+  "Gender of the name if supported by the locale."
+  gender: GenderRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateOnly in the future between RefDate and YearsToGoForward."
+type RandomFutureDateOnly {
+  "Years to go forward from RefDate. Default is 1 year."
+  yearsToGoForward: Int!
+  "The date to start calculations. Default is from DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateTime that will happen soon."
+type RandomFutureDateTime {
+  "Years to go forward from refDate. Default is 1 year."
+  yearsToGoForward: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random gender."
+type RandomGender {
+  "Enum values to exclude from this random pick."
+  excludeValues: [Gender!]
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random gender from the values provided."
+type RandomGenderFromValues {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfGender!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a music genre"
+type RandomGenre {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates an International Bank Account Number (IBAN)."
+type RandomIBAN {
+  "Formatted IBAN containing spaces. True or False"
+  formatted: Boolean!
+  "A two letter ISO3166 country code. Throws an exception if the country code is not found or is an invalid length."
+  countryCode: StringRefValue
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Returns a verb ending with -ing."
+type RandomIngVerb {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random integer value."
+type RandomInteger {
+  "Lower bound, inclusive. Defaults is 0."
+  min: Int!
+  "Upper bound, inclusive. Default is int.MaxValue."
+  max: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random integer from the values provided."
+type RandomIntegerFromValues {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfInt32!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a legit Internet URL avatar from twitter accounts."
+type RandomInternetAvatar {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random aesthetically pleasing color near the base RGB. See [here](http:\/\/stackoverflow.com\/questions\/43044\/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette)."
+type RandomInternetColor {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random user name."
+type RandomIp {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random IPv4 IPAddress type."
+type RandomIpAddress {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random IPv4 IPEndPoint."
+type RandomIpEndpoint {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random IPv6 address string."
+type RandomIpv6 {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generate a random IPv6 IPAddress type."
+type RandomIpv6Address {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generate a random IPv6 IPEndPoint."
+type RandomIpv6Endpoint {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random job area expertise."
+type RandomJobArea {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random job description."
+type RandomJobDescriptor {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random job title."
+type RandomJobTitle {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random type of job."
+type RandomJobType {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random last name."
+type RandomLastName {
+  "Generates a random last name based on the gender."
+  gender: GenderRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random latitude."
+type RandomLatitude {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a character letter."
+type RandomLetter {
+  "The number of characters to return."
+  count: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get lines of lorem."
+type RandomLines {
+  "The number of lines to generate. Defaults between 1 and 5."
+  lineCount: Int!
+  "The string to separate the paragraphs."
+  separator: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random Litecoin address."
+type RandomLitecoinAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random longitude."
+type RandomLongitude {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get an image from https:\/\/loremflickr.com service."
+type RandomLoremFlickrUrl {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Space or comma delimited list of keywords you want the picture to contain. IE: \"cat, dog\" for images with cats and dogs."
+  keywords: StringRefValue
+  "Grayscale the image."
+  grayscale: Boolean!
+  "True tries to match an image with all specified keywords. False tries to match an image with any specified keyword."
+  matchAllKeywords: Boolean!
+  "Deterministic image id. By default, this method generates URLs with image lock ids. So, if a random seed is set, repeat runs of this method will generate the same lock id sequence for images. If you want explicit control over the lock id, you can pass it as a parameter here. Additionally, if you don't want any lock ids, pass -1 for this parameter this method will generate a URL that will result in a new random image every time the HTTP URL is hit."
+  lockID: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a sentence with WordCount words.Defaults between 3 and 10."
+type RandomLoremSentence {
+  "Get a sentence with WordCount words. Defaults is 3."
+  wordCount: Int!
+  "Add anywhere between 0 to 'range' additional words to wordCount. Default is 7."
+  range: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get some sentences."
+type RandomLoremSentences {
+  "The number of sentences."
+  sentenceCount: Int!
+  "The string to separate sentences."
+  separator: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random mac address."
+type RandomMac {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a vehicle manufacture name. IE: Toyota, Ford, Porsche."
+type RandomManufacturer {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random mime type."
+type RandomMimeType {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a vehicle model. IE: Camry, Civic, Accord."
+type RandomModel {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random month"
+type RandomMonth {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Returns a noun."
+type RandomNoun {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates an ordinal direction. IE: Northwest, Southeast, SW, NE."
+type RandomOrdinalDirection {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a paragraph."
+type RandomParagraph {
+  "The minimum number of sentences in the paragraph. Final number of sentences is between Min and Min + 3."
+  minNumberOfSentences: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random number of paragraphs between Min and Max."
+type RandomParagraphs {
+  "Minimum number of paragraphs."
+  min: Int!
+  "Maximum number of paragraphs."
+  max: Int!
+  "The string to separate the paragraphs."
+  separator: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random password."
+type RandomPassword {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateOnly in the past between RefDate and YearsToGoBack."
+type RandomPastDateOnly {
+  "Years to go back from RefDate. Default is 1 year."
+  yearsToGoBack: Int!
+  "The date to start calculations. Default is from DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateTime in the past between refDate and yearsToGoBack."
+type RandomPastDateTime {
+  "Years to go back from refDate. Default is 1 year."
+  yearsToGoBack: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a phone number"
+type RandomPhoneNumber {
+  "Format of phone number in any format.\r\n      \/\/\/ Replaces # characters with numbers. IE: '###-###-####' or '(###) ###-####'."
+  format: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a phone number based on the locale's phone_number.formats[] array index."
+type RandomPhoneNumberFormat {
+  "The array index as defined in the locale's phone_number.formats[] array."
+  format: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Returns a random phrase."
+type RandomPhrase {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get an image from the https:\/\/picsum.photos service."
+type RandomPicsumURL {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Grayscale (no color) image."
+  grayscale: Boolean!
+  "Blurry image."
+  blur: Boolean!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get an image from https:\/\/placeholder.com service."
+type RandomPlaceholderUrl {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Text to be included in the image."
+  text: StringRefValue
+  "Image format. Supported values: 'jpg', 'jpeg', 'png', 'gif', 'webp'."
+  format: StringRefValue
+  "HTML color code for the background color."
+  backColor: StringRefValue
+  "HTML color code for the foreground (text) color."
+  textColor: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random port number."
+type RandomPort {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random prefix for a name."
+type RandomPrefix {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random product price."
+type RandomPrice {
+  "The minimum price."
+  min: Decimal!
+  "The maximum price."
+  max: Decimal!
+  "How many decimals the number may include."
+  decimals: Int!
+  "The symbol in front of the price."
+  symbol: StringRefValue
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random product."
+type RandomProduct {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random product adjective."
+type RandomProductAdjective {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random product description."
+type RandomProductDescription {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Gets a random product material."
+type RandomProductMaterial {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random product name."
+type RandomProductName {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random protocol. HTTP or HTTPS."
+type RandomProtocol {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random DateOnly within the last few days."
+type RandomRecentDateOnly {
+  "Number of days to go back."
+  days: Int!
+  "The date to start calculations. Default is from DateTime.Now>."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random DateTime within the last few days."
+type RandomRecentDateTime {
+  "Number of days to go back."
+  days: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random TimeOnly within the last few minutes."
+type RandomRecentTimeOnly {
+  "Minutes of the day to go back."
+  mins: Int!
+  "The time to start calculations. Default is time from DateTime.Now."
+  refTime: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides a random string that matches given regex."
+type RandomRegExString {
+  "Get a string that matches RegEx. Default one \"(.*?)\" matches anything."
+  regEx: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random user review."
+type RandomReview {
+  "The name of the product."
+  productName: StringRefValue
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates multiple random user reviews separated by empty lines."
+type RandomReviews {
+  "The name of the product."
+  productName: StringRefValue
+  "The number of reviews to be generated."
+  count: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates an ABA routing number with valid check digit."
+type RandomRoutingNumber {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random secondary address."
+type RandomSecondaryAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random semver version string."
+type RandomSemVer {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get slugify lorem words."
+type RandomSlugify {
+  "The number of words to slugify."
+  wordCount: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateOnly that will happen soon."
+type RandomSoonDateOnly {
+  "A date no more than Days ahead."
+  days: Int!
+  "The date to start calculations. Default is from <see DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a DateTime that will happen soon."
+type RandomSoonDateTime {
+  "A date no more than Days ahead."
+  days: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a TimeOnly that will happen soon."
+type RandomSoonTimeOnly {
+  "Minutes no more than mins ahead."
+  mins: Int!
+  "The time to start calculations. Default is time from DateTime.Now."
+  refTime: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random state."
+type RandomState {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random state abbreviation."
+type RandomStateAbbr {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random street address."
+type RandomStreetAddress {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random street name."
+type RandomStreetName {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random street suffix."
+type RandomStreetSuffix {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides a random string that can be a fixed size or have a random length to it."
+type RandomString {
+  "Get a string with CharacterCount characters. Defaults is 4."
+  characterCount: Int!
+  "Add anywhere between 0 to 'range' additional characters to CharacterCount. Default is 6."
+  range: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random string from the values provided."
+type RandomStringFromValues {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfString!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Replaces symbols with numbers and letters to generate a value."
+type RandomStringReplace {
+  "Formatted string. # = number, ? = letter, * = number or letter. IE: ###???* -> 283QED4. Letters are uppercase."
+  format: String!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random suffix for a name."
+type RandomSuffix {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get random text from random lorem methods."
+type RandomText {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random TimeOnly between Start and End."
+type RandomTimeOnly {
+  "Start time."
+  start: TimeSpan
+  "End time."
+  end: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random time from the values provided."
+type RandomTimeOnlyFromValues {
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfTimeOnly!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random TimeSpan."
+type RandomTimeSpan {
+  "Minimum of time to span. Default is TimeSpan.Zero."
+  minSpan: TimeSpan!
+  "Range of time to span. Default 1 week\/7 days."
+  range: TimeSpan!
+  "Round the TimeSpan to the nearest second."
+  round: Boolean!
+  "Format generated TimeSpan values."
+  format: TimeSpanFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a timezone string. Eg: America\/Los_Angeles"
+type RandomTimeZone {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a transaction type: \"deposit\", \"withdrawal\", \"payment\", or \"invoice\"."
+type RandomTransactionType {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a vehicle type. IE: Minivan, SUV, Sedan."
+type RandomType {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random URL."
+type RandomUrl {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a rooted URL path like: \/foo\/bar. Optionally with file extension."
+type RandomUrlRootedPath {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates an absolute URL with random path."
+type RandomUrlWithPath {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random user agent."
+type RandomUserAgent {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random user name."
+type RandomUserName {
+  "First name is always part of the returned user name."
+  firstName: StringRefValue
+  "Last name may or may not be used as part of the returned user name."
+  lastName: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random user name preserving Unicode characters."
+type RandomUserNameUnicode {
+  "First name is always part of the returned user name."
+  firstName: StringRefValue
+  "Last name may or may not be used as part of the returned user name."
+  lastName: StringRefValue
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random UUID\/Guid value."
+type RandomUuid {
+  "Determine whether the System.Guid value can contain all zeros (i.e. {00000000-0000-0000-0000-000000000000}). Default is true."
+  includeEmpty: Boolean!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random UUID\/GUID from the values provided."
+type RandomUuidFromValues {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfGuid!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generate a vehicle identification number (VIN)."
+type RandomVIN {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Returns a verb."
+type RandomVerb {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random `System.Version`."
+type RandomVersion {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random weekday"
+type RandomWeekday {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get a random lorem word."
+type RandomWord {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Get multiple random lorem words."
+type RandomWords {
+  "The number of random lorem words to return."
+  count: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Generates a random zipcode."
+type RandomZipCode {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+type RemoteTable {
+  name: String!
+  sourceType: RemoteSourceType!
+  schemaName: String!
+  tableName: String!
+  connectionString: String!
+}
+
+"Provides the actual row index row of the table regardless of any bounds placed on the visible rows."
+type RowIndex {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Provides the actual TimeDate row index row of the table regardless of any bounds placed on the visible rows."
+type RowTimeIndex {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+"Retreives row-by-row foreign values from the remote table."
+type SequentialForeignValue {
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int!
+  foreignTableColumn: ForeignTableColumn!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float!
+}
+
+type Settings {
+  general: GeneralSettings
+}
+
+type SqlQueryResultInfo {
+  columns: [DataColumnInfo!]!
+  rows: [DataRowInfo!]!
+}
+
+type StringAlgorithm {
+  random: RandomString
+  fromValues: RandomStringFromValues
+  replace: RandomStringReplace
+  formatted: FormattedString
+  regEx: RandomRegExString
+  buildingNumber: RandomBuildingNumber
+  cardinalDirection: RandomCardinalDirection
+  city: RandomCity
+  cityPrefix: RandomCityPrefix
+  citySuffix: RandomCitySuffix
+  country: RandomCountry
+  countryCode: RandomCountryCode
+  county: RandomCounty
+  direction: RandomDirection
+  fullAddress: RandomFullAddress
+  latitude: RandomLatitude
+  longitude: RandomLongitude
+  ordinalDirection: RandomOrdinalDirection
+  secondaryAddress: RandomSecondaryAddress
+  state: RandomState
+  stateAbbr: RandomStateAbbr
+  streetAddress: RandomStreetAddress
+  streetName: RandomStreetName
+  streetSuffix: RandomStreetSuffix
+  zipCode: RandomZipCode
+  categories: RandomCategories
+  commerceColor: RandomCommerceColor
+  department: RandomDepartment
+  ean8BarcodeNumber: RandomEan8BarcodeNumber
+  ean13BarcodeNumber: RandomEan13BarcodeNumber
+  price: RandomPrice
+  product: RandomProduct
+  productAdjective: RandomProductAdjective
+  productDescription: RandomProductDescription
+  productMaterial: RandomProductMaterial
+  productName: RandomProductName
+  bSPhrase: RandomBSPhrase
+  catchPhrase: RandomCatchPhrase
+  companyName: RandomCompanyName
+  companySuffix: RandomCompanySuffix
+  collation: RandomCollation
+  columnName: RandomColumnName
+  columnType: RandomColumnType
+  engine: RandomEngine
+  month: RandomMonth
+  timeZone: RandomTimeZone
+  weekday: RandomWeekday
+  accountName: RandomAccountName
+  accountNumber: RandomAccountNumber
+  bIC: RandomBIC
+  bitcoinAddress: RandomBitcoinAddress
+  creditCardCVV: RandomCreditCardCVV
+  creditCardNumber: RandomCreditCardNumber
+  currency: RandomCurrency
+  ethereumAddress: RandomEthereumAddress
+  iBAN: RandomIBAN
+  litecoinAddress: RandomLitecoinAddress
+  routingNumber: RandomRoutingNumber
+  transactionType: RandomTransactionType
+  abbreviation: RandomAbbreviation
+  adjective: RandomAdjective
+  ingVerb: RandomIngVerb
+  noun: RandomNoun
+  phrase: RandomPhrase
+  verb: RandomVerb
+  dataUri: RandomDataUri
+  picsumURL: RandomPicsumURL
+  placeholderUrl: RandomPlaceholderUrl
+  loremFlickrUrl: RandomLoremFlickrUrl
+  domainName: RandomDomainName
+  email: RandomEmail
+  exampleEmail: RandomExampleEmail
+  internetAvatar: RandomInternetAvatar
+  internetColor: RandomInternetColor
+  ip: RandomIp
+  ipAddress: RandomIpAddress
+  ipEndpoint: RandomIpEndpoint
+  ipv6: RandomIpv6
+  ipv6Address: RandomIpv6Address
+  ipv6Endpoint: RandomIpv6Endpoint
+  mac: RandomMac
+  password: RandomPassword
+  port: RandomPort
+  protocol: RandomProtocol
+  url: RandomUrl
+  urlRootedPath: RandomUrlRootedPath
+  urlWithPath: RandomUrlWithPath
+  userAgent: RandomUserAgent
+  userName: RandomUserName
+  userNameUnicode: RandomUserNameUnicode
+  letters: RandomLetter
+  lines: RandomLines
+  loremSentence: RandomLoremSentence
+  loremSentences: RandomLoremSentences
+  paragraph: RandomParagraph
+  paragraphs: RandomParagraphs
+  slugify: RandomSlugify
+  text: RandomText
+  word: RandomWord
+  words: RandomWords
+  musicGenre: RandomGenre
+  firstName: RandomFirstName
+  lastName: RandomLastName
+  findName: RandomFindName
+  fullName: RandomFullName
+  jobArea: RandomJobArea
+  jobDescriptor: RandomJobDescriptor
+  jobTitle: RandomJobTitle
+  jobType: RandomJobType
+  prefix: RandomPrefix
+  suffix: RandomSuffix
+  phoneNumber: RandomPhoneNumber
+  phoneNumberFormat: RandomPhoneNumberFormat
+  review: RandomReview
+  reviews: RandomReviews
+  androidID: RandomAndroidID
+  applePush: RandomApplePush
+  blackBerryPIN: RandomBlackBerryPIN
+  commonFileExtension: RandomCommonFileExtension
+  commonFileName: RandomCommonFileName
+  commonFileType: RandomCommonFileType
+  directoryPath: RandomDirectoryPath
+  exception: RandomException
+  fileExtension: RandomFileExtension
+  fileName: RandomFileName
+  filePath: RandomFilePath
+  fileType: RandomFileType
+  mimeType: RandomMimeType
+  semVer: RandomSemVer
+  version: RandomVersion
+  fuel: RandomFuel
+  vehicleManufacturer: RandomManufacturer
+  vehicleModel: RandomModel
+  vehicleType: RandomType
+  vIN: RandomVIN
+}
+
+type StringDataType {
+  algorithm: StringAlgorithm
+  nullable: Boolean!
+}
+
+type StringRefValue {
+  columnName: String
+  value: String
+}
+
+type Table {
+  mockTable: MockTable
+  remoteTable: RemoteTable
+}
+
+type TableInfo {
+  name: String!
+  tableType: TableType!
+  timeSlicing: TimeSlicing!
+  database: DatabaseInfo!
+}
+
+type TimeBasedPrimaryKey {
+  showAsColumn: Boolean!
+  lowerBound: String!
+  upperBound: String!
+  epoch: DateTime!
+  increment: TimeSpan!
+}
+
+type TimeOnlyAlgorithm {
+  fromValues: RandomTimeOnlyFromValues
+  random: RandomTimeOnly
+  recent: RandomRecentTimeOnly
+  soon: RandomSoonTimeOnly
+}
+
+type TimeOnlyDataType {
+  algorithm: TimeOnlyAlgorithm
+  nullable: Boolean!
+}
+
+type TimeSeriesAlgorithm {
+  index: RowTimeIndex
+}
+
+type TimeSeriesDataType {
+  nullable: Boolean!
+  algorithm: TimeSeriesAlgorithm!
+}
+
+type TimeSlicing {
+  epoch: DateTime!
+  increment: TimeSpan!
+}
+
+type TimeSpanAlgorithm {
+  random: RandomTimeSpan
+}
+
+type TimeSpanDataType {
+  algorithm: TimeSpanAlgorithm
+  nullable: Boolean!
+}
+
+type UpdateSettingsOut {
+  restartRequired: Boolean!
+}
+
+type UuidAlgorithm {
+  random: RandomUuid
+  fromValues: RandomUuidFromValues
+}
+
+type UuidDataType {
+  algorithm: UuidAlgorithm
+  nullable: Boolean!
+}
+
+type WeightedValueOfDateOnly {
+  compareTo(other: WeightedValueOfDateOnlyInput!): Int!
+  value: Date!
+  weight: Float!
+}
+
+type WeightedValueOfDateTime {
+  compareTo(other: WeightedValueOfDateTimeInput!): Int!
+  value: DateTime!
+  weight: Float!
+}
+
+type WeightedValueOfGender {
+  compareTo(other: WeightedValueOfGenderInput!): Int!
+  value: Gender!
+  weight: Float!
+}
+
+type WeightedValueOfGuid {
+  compareTo(other: WeightedValueOfGuidInput!): Int!
+  value: UUID!
+  weight: Float!
+}
+
+type WeightedValueOfInt32 {
+  compareTo(other: WeightedValueOfInt32Input!): Int!
+  value: Int!
+  weight: Float!
+}
+
+type WeightedValueOfSingle {
+  compareTo(other: WeightedValueOfSingleInput!): Int!
+  value: Float!
+  weight: Float!
+}
+
+type WeightedValueOfString {
+  compareTo(other: WeightedValueOfStringInput!): Int!
+  value: String!
+  weight: Float!
+}
+
+type WeightedValueOfTimeOnly {
+  compareTo(other: WeightedValueOfTimeOnlyInput!): Int!
+  value: TimeSpan!
+  weight: Float!
+}
+
+input AlgorithmDefinitionInput {
+  name: String!
+  getValueScript: String!
+  setupScript: String
+  algorithmType: DataTypeEnum!
+  "Invoking a PowerShell script is expensive, therefore many values are requested in batches.  Adjust this value depending on the execution time to retrieve one value."
+  valuesToRetrieveInBatch: Int! = 500
+}
+
+input BooleanAlgorithmInput @oneOf {
+  random: RandomBooleanInput
+}
+
+input BooleanDataTypeInput {
+  algorithm: BooleanAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input ColumnInfoFilterInput {
+  and: [ColumnInfoFilterInput!]
+  or: [ColumnInfoFilterInput!]
+  name: StringOperationFilterInput
+  table: TableInfoFilterInput
+}
+
+input ColumnInfoSortInput {
+  name: SortEnumType
+  table: TableInfoSortInput
+}
+
+input ColumnInput {
+  name: String!
+  iD: String
+  dataType: DataTypeInput!
+}
+
+input ColumnRefInput {
+  columnName: String
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableTimeSpanOperationFilterInput {
+  eq: TimeSpan
+  neq: TimeSpan
+  in: [TimeSpan!]
+  nin: [TimeSpan!]
+  gt: TimeSpan
+  ngt: TimeSpan
+  gte: TimeSpan
+  ngte: TimeSpan
+  lt: TimeSpan
+  nlt: TimeSpan
+  lte: TimeSpan
+  nlte: TimeSpan
+}
+
+input ConfigureServerInInput {
+  settings: UpdateSettingsInInput
+  algorithms: [AlgorithmDefinitionInput]
+  schema: ExtendSchemaInInput
+}
+
+input DataTypeInput @oneOf {
+  string: StringDataTypeInput
+  boolean: BooleanDataTypeInput
+  integer: IntegerDataTypeInput
+  uuid: UuidDataTypeInput
+  float: FloatDataTypeInput
+  dateOnly: DateOnlyDataTypeInput
+  dateTime: DateTimeDataTypeInput
+  decimal: DecimalDataTypeInput
+  gender: GenderDataTypeInput
+  timeOnly: TimeOnlyDataTypeInput
+  timeSpan: TimeSpanDataTypeInput
+  timeSeries: TimeSeriesDataTypeInput
+  foreignValue: ForeignValueDataTypeInput
+}
+
+input DatabaseInfoFilterInput {
+  and: [DatabaseInfoFilterInput!]
+  or: [DatabaseInfoFilterInput!]
+  name: StringOperationFilterInput
+}
+
+input DatabaseInfoSortInput {
+  name: SortEnumType
+}
+
+input DatabaseInput {
+  name: String = "MockDB"
+  tables: [TableInput!]
+  renamesDontChangeGeneratedData: Boolean! = false
+  seed: Int
+}
+
+input DateOnlyAlgorithmInput @oneOf {
+  fromValues: RandomDateOnlyFromValuesInput
+  random: RandomDateOnlyInput
+  future: RandomFutureDateOnlyInput
+  past: RandomPastDateOnlyInput
+  recent: RandomRecentDateOnlyInput
+  soon: RandomSoonDateOnlyInput
+}
+
+input DateOnlyDataTypeInput {
+  algorithm: DateOnlyAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input DateTimeAlgorithmInput @oneOf {
+  random: RandomDateTimeInput
+  fromValues: RandomDateTimeFromValuesInput
+  incrementing: IncrementingDateTimeInput
+  future: RandomFutureDateTimeInput
+  past: RandomPastDateTimeInput
+  recent: RandomRecentDateTimeInput
+  soon: RandomSoonDateTimeInput
+}
+
+input DateTimeDataTypeInput {
+  algorithm: DateTimeAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input DecimalAlgorithmInput @oneOf {
+  randomAmount: RandomAmountInput
+}
+
+input DecimalDataTypeInput {
+  algorithm: DecimalAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input ExtendSchemaInInput {
+  databases: [DatabaseInput]
+  overwrite: Boolean! = false
+}
+
+input FloatAlgorithmInput @oneOf {
+  random: RandomFloatInput
+  fromValues: RandomFloatFromValuesInput
+  incrementingFloat: IncrementingFloatInput
+}
+
+input FloatDataTypeInput {
+  algorithm: FloatAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input ForeignTableColumnInput {
+  "Name of remote table from which to pull foreign values from."
+  tableName: String!
+  "Name of column in the remote table from which to pull foreign values from."
+  columnName: String!
+}
+
+input ForeignValueAlgorithmInput @oneOf {
+  sequential: SequentialForeignValueInput
+  random: RandomForeignValueInput
+}
+
+input ForeignValueDataTypeInput {
+  nullable: Boolean! = false
+  algorithm: ForeignValueAlgorithmInput!
+}
+
+"Converts the value of columns to strings based on the Format property specified to create a concatenated string value for this column."
+input FormattedStringInput {
+  "Replaces one or more format items in a string with the string representation of the columns specified. Uses the same syntax as the String.Format Method of the .NET Framework."
+  format: String!
+  "References to the other columns which are used by the 'Format' property to build this column's value."
+  columns: [ColumnRefInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+input GenderAlgorithmInput @oneOf {
+  random: RandomGenderInput
+  fromValues: RandomGenderFromValuesInput
+}
+
+input GenderDataTypeInput {
+  algorithm: GenderAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input GenderRefValueInput {
+  columnName: String
+  value: Gender
+}
+
+input GeneralSettingsInput {
+  defaultDatabaseName: String
+  seedDatabases: Boolean
+  caseSensitive: Boolean
+}
+
+"Provides a DateTime value that starts at a value and increments for each row in the table."
+input IncrementingDateTimeInput {
+  "Value that is used for the very first row of the table. Defaults is DateTime.Now."
+  start: DateTime
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1 minute."
+  increment: TimeSpan!
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int! = 0
+  "Noise property randomly add a factor of noise to each sample value. Defaults is 0."
+  noise: Int! = 0
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides a float value that starts at a value and increments for each row in the table."
+input IncrementingFloatInput {
+  "Value that is used for the very first row of the table. Defaults is 1."
+  start: Int! = 1
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1."
+  increment: Int! = 1
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int! = 0
+  "Noise property randomly add a factor of noise to each sample value. Defaults is 0."
+  noise: Int! = 0
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides an interger value that starts at a value and increments for each row in the table."
+input IncrementingIntegerInput {
+  "Value that is used for the very first row of the table. Defaults is 1."
+  start: Int! = 1
+  "Incremental value that is added to the identity value of the previous row. Defaults is 1."
+  increment: Int! = 1
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int! = 0
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+input IntegerAlgorithmInput @oneOf {
+  random: RandomIntegerInput
+  fromValues: RandomIntegerFromValuesInput
+  incrementing: IncrementingIntegerInput
+  index: RowIndexInput
+}
+
+input IntegerDataTypeInput {
+  algorithm: IntegerAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input IntrinsicPrimaryKeyInput {
+  showAsColumn: Boolean! = false
+  rows: Int! = 25
+  rowsRange: Int! = 0
+}
+
+input MockDBParameterInInput {
+  parameterName: String
+}
+
+input MockTableInput {
+  name: String!
+  iD: String
+  primaryKey: PrimaryKeyInput!
+  columns: [ColumnInput!]!
+  seed: Int
+}
+
+input PrimaryKeyInput @oneOf {
+  intrinsic: IntrinsicPrimaryKeyInput
+  timeBased: TimeBasedPrimaryKeyInput
+}
+
+"Returns an abbreviation."
+input RandomAbbreviationInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get an account name. Like \"savings\", \"checking\", \"Home Loan\" etc.."
+input RandomAccountNameInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get an account number. Default length is 8 digits."
+input RandomAccountNumberInput {
+  "The length of the account number. Default is 8."
+  length: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Returns a adjective."
+input RandomAdjectiveInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random amount. Default 0.00 - 1000.00."
+input RandomAmountInput {
+  "Min value. Default 0.00"
+  min: Decimal!
+  "Max value. Default 1000.00"
+  max: Decimal!
+  "Decimal places. Default 2."
+  decimals: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random GCM registration ID."
+input RandomAndroidIDInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random Apple Push Token."
+input RandomApplePushInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates Bank Identifier Code (BIC) code."
+input RandomBICInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random company BS phrase."
+input RandomBSPhraseInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random Bitcoin address."
+input RandomBitcoinAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random BlackBerry Device PIN."
+input RandomBlackBerryPINInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides a random boolean value"
+input RandomBooleanInput {
+  "Percent chance, 0.0 through 1.0, of a true. Defaults is 0.5"
+  percentTrue: Float! = 0.5
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random building number."
+input RandomBuildingNumberInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a cardinal direction. IE: North, South, E, W."
+input RandomCardinalDirectionInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random catch phrase."
+input RandomCatchPhraseInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a collection of random product categories."
+input RandomCategoriesInput {
+  "The amount of categories to be generated."
+  count: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random city."
+input RandomCityInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random city prefix."
+input RandomCityPrefixInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random city suffix."
+input RandomCitySuffixInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a collation."
+input RandomCollationInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a column name."
+input RandomColumnNameInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a column type."
+input RandomColumnTypeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random color."
+input RandomCommerceColorInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a commonly used file extension."
+input RandomCommonFileExtensionInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random file name with a common file extension."
+input RandomCommonFileNameInput {
+  "The extension to be used for a file name."
+  fileExtension: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a commonly used file type."
+input RandomCommonFileTypeInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random company name."
+input RandomCompanyNameInput {
+  "0: name + suffix, 1: name - name, 2: name, name and name."
+  formatIndex: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random company suffix. \"Inc\" and \"LLC\" etc."
+input RandomCompanySuffixInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random ISO 3166-1 country code."
+input RandomCountryCodeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random country."
+input RandomCountryInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random county."
+input RandomCountyInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generate a credit card CVV."
+input RandomCreditCardCVVInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generate a random credit card number with valid Luhn checksum."
+input RandomCreditCardNumberInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random currency."
+input RandomCurrencyInput {
+  "Currency value to return."
+  currencyType: CurrencyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a SVG data URI image with a specific width and height."
+input RandomDataUriInput {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "An html color in named format 'grey', RGB format 'rgb(r,g,b)', or hex format '#888888'."
+  hTMLColor: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random date from the values provided."
+input RandomDateOnlyFromValuesInput {
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfDateOnlyInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random DateOnly between Start and End."
+input RandomDateOnlyInput {
+  "Start date."
+  start: Date
+  "End date."
+  end: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random date and time from the values provided."
+input RandomDateTimeFromValuesInput {
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfDateTimeInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random date\/time value"
+input RandomDateTimeInput {
+  "The start date\/time to generate random values past."
+  start: DateTime
+  "The end date\/time to generate random values before."
+  end: DateTime
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random commerce department."
+input RandomDepartmentInput {
+  "The maximum amount of departments"
+  max: Int!
+  "If true the method returns the max amount of values, otherwise the number of categories returned is between 1 and max."
+  returnMax: Boolean!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a cardinal or ordinal direction. IE: Northwest, South, SW, E."
+input RandomDirectionInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random Unix directory path."
+input RandomDirectoryPathInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random domain name."
+input RandomDomainNameInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random Ean-13 barcode number"
+input RandomEan13BarcodeNumberInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random Ean8 barcode number"
+input RandomEan8BarcodeNumberInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random email"
+input RandomEmailInput {
+  "Always use this first name in generating the random email address."
+  firstName: StringRefValueInput
+  "Sometimes used depending on randomness. See 'UserName' algorithm."
+  lastName: StringRefValueInput
+  "Email is composed with this provider."
+  provider: StringRefValueInput
+  "This parameter is appended to the email account just before the @ symbol. This is useful for situations where you might have a unique email constraint in your database or application."
+  uniqueSuffix: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a storage engine."
+input RandomEngineInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random Ethereum address."
+input RandomEthereumAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates an example email ending with @example.com"
+input RandomExampleEmailInput {
+  "Optional: first name of the user."
+  firstName: StringRefValueInput
+  "Optional: last name of the user."
+  lastName: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random `Exception` with a fake stack trace."
+input RandomExceptionInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random extension for the given mime type."
+input RandomFileExtensionInput {
+  "Mime Type for the extension to be generated"
+  mimeType: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random file name."
+input RandomFileNameInput {
+  "The extension the file name will have."
+  fileExtension: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random Unix file path."
+input RandomFilePathInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a file type available as mime-type."
+input RandomFileTypeInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a full name."
+input RandomFindNameInput {
+  "Use this first name."
+  firstName: StringRefValueInput
+  "Use this last name."
+  lastName: StringRefValueInput
+  "Add a prefix?"
+  usePrefix: Boolean!
+  "Add a suffix?"
+  useSuffix: Boolean!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random first name."
+input RandomFirstNameInput {
+  "Generates a random first name based on the gender."
+  gender: GenderRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random float from the values provided."
+input RandomFloatFromValuesInput {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfSingleInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random float value."
+input RandomFloatInput {
+  "Lower bound, inclusive. Defaults is 0.0."
+  min: Float! = 0
+  "Upper bound, inclusive. Default is 1.0."
+  max: Float! = 1
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Retreives a random foreign value from the remote table."
+input RandomForeignValueInput {
+  foreignTableColumn: ForeignTableColumnInput!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a vehicle fuel type. IE: Electric, Gasoline, Diesel."
+input RandomFuelInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random full address like Street, City, Country."
+input RandomFullAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a full name by concating a FirstName and a LastName."
+input RandomFullNameInput {
+  "Gender of the name if supported by the locale."
+  gender: GenderRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateOnly in the future between RefDate and YearsToGoForward."
+input RandomFutureDateOnlyInput {
+  "Years to go forward from RefDate. Default is 1 year."
+  yearsToGoForward: Int!
+  "The date to start calculations. Default is from DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateTime that will happen soon."
+input RandomFutureDateTimeInput {
+  "Years to go forward from refDate. Default is 1 year."
+  yearsToGoForward: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random gender from the values provided."
+input RandomGenderFromValuesInput {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfGenderInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random gender."
+input RandomGenderInput {
+  "Enum values to exclude from this random pick."
+  excludeValues: [Gender!]
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a music genre"
+input RandomGenreInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates an International Bank Account Number (IBAN)."
+input RandomIBANInput {
+  "Formatted IBAN containing spaces. True or False"
+  formatted: Boolean!
+  "A two letter ISO3166 country code. Throws an exception if the country code is not found or is an invalid length."
+  countryCode: StringRefValueInput
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Returns a verb ending with -ing."
+input RandomIngVerbInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random integer from the values provided."
+input RandomIntegerFromValuesInput {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfInt32Input!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random integer value."
+input RandomIntegerInput {
+  "Lower bound, inclusive. Defaults is 0."
+  min: Int! = 0
+  "Upper bound, inclusive. Default is int.MaxValue."
+  max: Int! = 2147483647
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a legit Internet URL avatar from twitter accounts."
+input RandomInternetAvatarInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random aesthetically pleasing color near the base RGB. See [here](http:\/\/stackoverflow.com\/questions\/43044\/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette)."
+input RandomInternetColorInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random IPv4 IPAddress type."
+input RandomIpAddressInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random IPv4 IPEndPoint."
+input RandomIpEndpointInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random user name."
+input RandomIpInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generate a random IPv6 IPAddress type."
+input RandomIpv6AddressInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generate a random IPv6 IPEndPoint."
+input RandomIpv6EndpointInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random IPv6 address string."
+input RandomIpv6Input {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random job area expertise."
+input RandomJobAreaInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random job description."
+input RandomJobDescriptorInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random job title."
+input RandomJobTitleInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random type of job."
+input RandomJobTypeInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random last name."
+input RandomLastNameInput {
+  "Generates a random last name based on the gender."
+  gender: GenderRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random latitude."
+input RandomLatitudeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a character letter."
+input RandomLetterInput {
+  "The number of characters to return."
+  count: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get lines of lorem."
+input RandomLinesInput {
+  "The number of lines to generate. Defaults between 1 and 5."
+  lineCount: Int! = 0
+  "The string to separate the paragraphs."
+  separator: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random Litecoin address."
+input RandomLitecoinAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random longitude."
+input RandomLongitudeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get an image from https:\/\/loremflickr.com service."
+input RandomLoremFlickrUrlInput {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Space or comma delimited list of keywords you want the picture to contain. IE: \"cat, dog\" for images with cats and dogs."
+  keywords: StringRefValueInput
+  "Grayscale the image."
+  grayscale: Boolean!
+  "True tries to match an image with all specified keywords. False tries to match an image with any specified keyword."
+  matchAllKeywords: Boolean!
+  "Deterministic image id. By default, this method generates URLs with image lock ids. So, if a random seed is set, repeat runs of this method will generate the same lock id sequence for images. If you want explicit control over the lock id, you can pass it as a parameter here. Additionally, if you don't want any lock ids, pass -1 for this parameter this method will generate a URL that will result in a new random image every time the HTTP URL is hit."
+  lockID: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a sentence with WordCount words.Defaults between 3 and 10."
+input RandomLoremSentenceInput {
+  "Get a sentence with WordCount words. Defaults is 3."
+  wordCount: Int! = 3
+  "Add anywhere between 0 to 'range' additional words to wordCount. Default is 7."
+  range: Int! = 7
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get some sentences."
+input RandomLoremSentencesInput {
+  "The number of sentences."
+  sentenceCount: Int! = 0
+  "The string to separate sentences."
+  separator: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random mac address."
+input RandomMacInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a vehicle manufacture name. IE: Toyota, Ford, Porsche."
+input RandomManufacturerInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random mime type."
+input RandomMimeTypeInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a vehicle model. IE: Camry, Civic, Accord."
+input RandomModelInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random month"
+input RandomMonthInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Returns a noun."
+input RandomNounInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates an ordinal direction. IE: Northwest, Southeast, SW, NE."
+input RandomOrdinalDirectionInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a paragraph."
+input RandomParagraphInput {
+  "The minimum number of sentences in the paragraph. Final number of sentences is between Min and Min + 3."
+  minNumberOfSentences: Int! = 3
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random number of paragraphs between Min and Max."
+input RandomParagraphsInput {
+  "Minimum number of paragraphs."
+  min: Int! = 0
+  "Maximum number of paragraphs."
+  max: Int! = 0
+  "The string to separate the paragraphs."
+  separator: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random password."
+input RandomPasswordInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateOnly in the past between RefDate and YearsToGoBack."
+input RandomPastDateOnlyInput {
+  "Years to go back from RefDate. Default is 1 year."
+  yearsToGoBack: Int!
+  "The date to start calculations. Default is from DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateTime in the past between refDate and yearsToGoBack."
+input RandomPastDateTimeInput {
+  "Years to go back from refDate. Default is 1 year."
+  yearsToGoBack: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a phone number based on the locale's phone_number.formats[] array index."
+input RandomPhoneNumberFormatInput {
+  "The array index as defined in the locale's phone_number.formats[] array."
+  format: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a phone number"
+input RandomPhoneNumberInput {
+  "Format of phone number in any format.\r\n      \/\/\/ Replaces # characters with numbers. IE: '###-###-####' or '(###) ###-####'."
+  format: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Returns a random phrase."
+input RandomPhraseInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get an image from the https:\/\/picsum.photos service."
+input RandomPicsumURLInput {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Grayscale (no color) image."
+  grayscale: Boolean!
+  "Blurry image."
+  blur: Boolean!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get an image from https:\/\/placeholder.com service."
+input RandomPlaceholderUrlInput {
+  "Minimum width of the image."
+  minWidth: Int!
+  "Maximum width of the image."
+  maxWidth: Int!
+  "Minimum height of the image."
+  minHeight: Int!
+  "Maximum height of the image."
+  maxHeight: Int!
+  "Text to be included in the image."
+  text: StringRefValueInput
+  "Image format. Supported values: 'jpg', 'jpeg', 'png', 'gif', 'webp'."
+  format: StringRefValueInput
+  "HTML color code for the background color."
+  backColor: StringRefValueInput
+  "HTML color code for the foreground (text) color."
+  textColor: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random port number."
+input RandomPortInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random prefix for a name."
+input RandomPrefixInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random product price."
+input RandomPriceInput {
+  "The minimum price."
+  min: Decimal!
+  "The maximum price."
+  max: Decimal!
+  "How many decimals the number may include."
+  decimals: Int!
+  "The symbol in front of the price."
+  symbol: StringRefValueInput
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random product adjective."
+input RandomProductAdjectiveInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random product description."
+input RandomProductDescriptionInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random product."
+input RandomProductInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Gets a random product material."
+input RandomProductMaterialInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random product name."
+input RandomProductNameInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random protocol. HTTP or HTTPS."
+input RandomProtocolInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random DateOnly within the last few days."
+input RandomRecentDateOnlyInput {
+  "Number of days to go back."
+  days: Int!
+  "The date to start calculations. Default is from DateTime.Now>."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random DateTime within the last few days."
+input RandomRecentDateTimeInput {
+  "Number of days to go back."
+  days: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random TimeOnly within the last few minutes."
+input RandomRecentTimeOnlyInput {
+  "Minutes of the day to go back."
+  mins: Int!
+  "The time to start calculations. Default is time from DateTime.Now."
+  refTime: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides a random string that matches given regex."
+input RandomRegExStringInput {
+  "Get a string that matches RegEx. Default one \"(.*?)\" matches anything."
+  regEx: String = "(.*?)"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random user review."
+input RandomReviewInput {
+  "The name of the product."
+  productName: StringRefValueInput
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates multiple random user reviews separated by empty lines."
+input RandomReviewsInput {
+  "The name of the product."
+  productName: StringRefValueInput
+  "The number of reviews to be generated."
+  count: Int!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates an ABA routing number with valid check digit."
+input RandomRoutingNumberInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random secondary address."
+input RandomSecondaryAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random semver version string."
+input RandomSemVerInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get slugify lorem words."
+input RandomSlugifyInput {
+  "The number of words to slugify."
+  wordCount: Int! = 3
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateOnly that will happen soon."
+input RandomSoonDateOnlyInput {
+  "A date no more than Days ahead."
+  days: Int!
+  "The date to start calculations. Default is from <see DateTime.Now."
+  refDate: Date
+  "Format generated DateOnly values."
+  format: DateOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a DateTime that will happen soon."
+input RandomSoonDateTimeInput {
+  "A date no more than Days ahead."
+  days: Int!
+  "The date to start calculations. Default is DateTime.Now."
+  refDate: DateTime
+  "Format generated DateTime values."
+  format: DateTimeFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a TimeOnly that will happen soon."
+input RandomSoonTimeOnlyInput {
+  "Minutes no more than mins ahead."
+  mins: Int!
+  "The time to start calculations. Default is time from DateTime.Now."
+  refTime: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random state abbreviation."
+input RandomStateAbbrInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random state."
+input RandomStateInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random street address."
+input RandomStreetAddressInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random street name."
+input RandomStreetNameInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random street suffix."
+input RandomStreetSuffixInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random string from the values provided."
+input RandomStringFromValuesInput {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfStringInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides a random string that can be a fixed size or have a random length to it."
+input RandomStringInput {
+  "Get a string with CharacterCount characters. Defaults is 4."
+  characterCount: Int! = 4
+  "Add anywhere between 0 to 'range' additional characters to CharacterCount. Default is 6."
+  range: Int! = 6
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Replaces symbols with numbers and letters to generate a value."
+input RandomStringReplaceInput {
+  "Formatted string. # = number, ? = letter, * = number or letter. IE: ###???* -> 283QED4. Letters are uppercase."
+  format: String!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random suffix for a name."
+input RandomSuffixInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get random text from random lorem methods."
+input RandomTextInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random time from the values provided."
+input RandomTimeOnlyFromValuesInput {
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "List of values to randomly choose from."
+  values: [WeightedValueOfTimeOnlyInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random TimeOnly between Start and End."
+input RandomTimeOnlyInput {
+  "Start time."
+  start: TimeSpan
+  "End time."
+  end: TimeSpan
+  "Format generated TimeOnly values."
+  format: TimeOnlyFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random TimeSpan."
+input RandomTimeSpanInput {
+  "Minimum of time to span. Default is TimeSpan.Zero."
+  minSpan: TimeSpan!
+  "Range of time to span. Default 1 week\/7 days."
+  range: TimeSpan!
+  "Round the TimeSpan to the nearest second."
+  round: Boolean!
+  "Format generated TimeSpan values."
+  format: TimeSpanFormatEnum!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a timezone string. Eg: America\/Los_Angeles"
+input RandomTimeZoneInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a transaction type: \"deposit\", \"withdrawal\", \"payment\", or \"invoice\"."
+input RandomTransactionTypeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a vehicle type. IE: Minivan, SUV, Sedan."
+input RandomTypeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random URL."
+input RandomUrlInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a rooted URL path like: \/foo\/bar. Optionally with file extension."
+input RandomUrlRootedPathInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates an absolute URL with random path."
+input RandomUrlWithPathInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random user agent."
+input RandomUserAgentInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random user name."
+input RandomUserNameInput {
+  "First name is always part of the returned user name."
+  firstName: StringRefValueInput
+  "Last name may or may not be used as part of the returned user name."
+  lastName: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random user name preserving Unicode characters."
+input RandomUserNameUnicodeInput {
+  "First name is always part of the returned user name."
+  firstName: StringRefValueInput
+  "Last name may or may not be used as part of the returned user name."
+  lastName: StringRefValueInput
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random UUID\/GUID from the values provided."
+input RandomUuidFromValuesInput {
+  "List of values to randomly choose from."
+  values: [WeightedValueOfGuidInput!]!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random UUID\/Guid value."
+input RandomUuidInput {
+  "Determine whether the System.Guid value can contain all zeros (i.e. {00000000-0000-0000-0000-000000000000}). Default is true."
+  includeEmpty: Boolean! = true
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generate a vehicle identification number (VIN)."
+input RandomVINInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Returns a verb."
+input RandomVerbInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random `System.Version`."
+input RandomVersionInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random weekday"
+input RandomWeekdayInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get a random lorem word."
+input RandomWordInput {
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Get multiple random lorem words."
+input RandomWordsInput {
+  "The number of random lorem words to return."
+  count: Int!
+  "The locale to be set. Default is \"en\" for English."
+  locale: String = "en"
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Generates a random zipcode."
+input RandomZipCodeInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+input RemoteTableInput {
+  name: String!
+  sourceType: RemoteSourceType!
+  schemaName: String = ""
+  tableName: String!
+  connectionString: String!
+}
+
+"Provides the actual row index row of the table regardless of any bounds placed on the visible rows."
+input RowIndexInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Provides the actual TimeDate row index row of the table regardless of any bounds placed on the visible rows."
+input RowTimeIndexInput {
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+"Retreives row-by-row foreign values from the remote table."
+input SequentialForeignValueInput {
+  "Repeat the value X times. Defaults is 0 which means no repetition."
+  repeat: Int! = 0
+  foreignTableColumn: ForeignTableColumnInput!
+  "Percent chance, 0.0 through 1.0, of the generated value being null. Defaults is 0.0"
+  percentNull: Float! = 0
+}
+
+input StringAlgorithmInput @oneOf {
+  random: RandomStringInput
+  fromValues: RandomStringFromValuesInput
+  replace: RandomStringReplaceInput
+  formatted: FormattedStringInput
+  regEx: RandomRegExStringInput
+  buildingNumber: RandomBuildingNumberInput
+  cardinalDirection: RandomCardinalDirectionInput
+  city: RandomCityInput
+  cityPrefix: RandomCityPrefixInput
+  citySuffix: RandomCitySuffixInput
+  country: RandomCountryInput
+  countryCode: RandomCountryCodeInput
+  county: RandomCountyInput
+  direction: RandomDirectionInput
+  fullAddress: RandomFullAddressInput
+  latitude: RandomLatitudeInput
+  longitude: RandomLongitudeInput
+  ordinalDirection: RandomOrdinalDirectionInput
+  secondaryAddress: RandomSecondaryAddressInput
+  state: RandomStateInput
+  stateAbbr: RandomStateAbbrInput
+  streetAddress: RandomStreetAddressInput
+  streetName: RandomStreetNameInput
+  streetSuffix: RandomStreetSuffixInput
+  zipCode: RandomZipCodeInput
+  categories: RandomCategoriesInput
+  commerceColor: RandomCommerceColorInput
+  department: RandomDepartmentInput
+  ean8BarcodeNumber: RandomEan8BarcodeNumberInput
+  ean13BarcodeNumber: RandomEan13BarcodeNumberInput
+  price: RandomPriceInput
+  product: RandomProductInput
+  productAdjective: RandomProductAdjectiveInput
+  productDescription: RandomProductDescriptionInput
+  productMaterial: RandomProductMaterialInput
+  productName: RandomProductNameInput
+  bSPhrase: RandomBSPhraseInput
+  catchPhrase: RandomCatchPhraseInput
+  companyName: RandomCompanyNameInput
+  companySuffix: RandomCompanySuffixInput
+  collation: RandomCollationInput
+  columnName: RandomColumnNameInput
+  columnType: RandomColumnTypeInput
+  engine: RandomEngineInput
+  month: RandomMonthInput
+  timeZone: RandomTimeZoneInput
+  weekday: RandomWeekdayInput
+  accountName: RandomAccountNameInput
+  accountNumber: RandomAccountNumberInput
+  bIC: RandomBICInput
+  bitcoinAddress: RandomBitcoinAddressInput
+  creditCardCVV: RandomCreditCardCVVInput
+  creditCardNumber: RandomCreditCardNumberInput
+  currency: RandomCurrencyInput
+  ethereumAddress: RandomEthereumAddressInput
+  iBAN: RandomIBANInput
+  litecoinAddress: RandomLitecoinAddressInput
+  routingNumber: RandomRoutingNumberInput
+  transactionType: RandomTransactionTypeInput
+  abbreviation: RandomAbbreviationInput
+  adjective: RandomAdjectiveInput
+  ingVerb: RandomIngVerbInput
+  noun: RandomNounInput
+  phrase: RandomPhraseInput
+  verb: RandomVerbInput
+  dataUri: RandomDataUriInput
+  picsumURL: RandomPicsumURLInput
+  placeholderUrl: RandomPlaceholderUrlInput
+  loremFlickrUrl: RandomLoremFlickrUrlInput
+  domainName: RandomDomainNameInput
+  email: RandomEmailInput
+  exampleEmail: RandomExampleEmailInput
+  internetAvatar: RandomInternetAvatarInput
+  internetColor: RandomInternetColorInput
+  ip: RandomIpInput
+  ipAddress: RandomIpAddressInput
+  ipEndpoint: RandomIpEndpointInput
+  ipv6: RandomIpv6Input
+  ipv6Address: RandomIpv6AddressInput
+  ipv6Endpoint: RandomIpv6EndpointInput
+  mac: RandomMacInput
+  password: RandomPasswordInput
+  port: RandomPortInput
+  protocol: RandomProtocolInput
+  url: RandomUrlInput
+  urlRootedPath: RandomUrlRootedPathInput
+  urlWithPath: RandomUrlWithPathInput
+  userAgent: RandomUserAgentInput
+  userName: RandomUserNameInput
+  userNameUnicode: RandomUserNameUnicodeInput
+  letters: RandomLetterInput
+  lines: RandomLinesInput
+  loremSentence: RandomLoremSentenceInput
+  loremSentences: RandomLoremSentencesInput
+  paragraph: RandomParagraphInput
+  paragraphs: RandomParagraphsInput
+  slugify: RandomSlugifyInput
+  text: RandomTextInput
+  word: RandomWordInput
+  words: RandomWordsInput
+  musicGenre: RandomGenreInput
+  firstName: RandomFirstNameInput
+  lastName: RandomLastNameInput
+  findName: RandomFindNameInput
+  fullName: RandomFullNameInput
+  jobArea: RandomJobAreaInput
+  jobDescriptor: RandomJobDescriptorInput
+  jobTitle: RandomJobTitleInput
+  jobType: RandomJobTypeInput
+  prefix: RandomPrefixInput
+  suffix: RandomSuffixInput
+  phoneNumber: RandomPhoneNumberInput
+  phoneNumberFormat: RandomPhoneNumberFormatInput
+  review: RandomReviewInput
+  reviews: RandomReviewsInput
+  androidID: RandomAndroidIDInput
+  applePush: RandomApplePushInput
+  blackBerryPIN: RandomBlackBerryPINInput
+  commonFileExtension: RandomCommonFileExtensionInput
+  commonFileName: RandomCommonFileNameInput
+  commonFileType: RandomCommonFileTypeInput
+  directoryPath: RandomDirectoryPathInput
+  exception: RandomExceptionInput
+  fileExtension: RandomFileExtensionInput
+  fileName: RandomFileNameInput
+  filePath: RandomFilePathInput
+  fileType: RandomFileTypeInput
+  mimeType: RandomMimeTypeInput
+  semVer: RandomSemVerInput
+  version: RandomVersionInput
+  fuel: RandomFuelInput
+  vehicleManufacturer: RandomManufacturerInput
+  vehicleModel: RandomModelInput
+  vehicleType: RandomTypeInput
+  vIN: RandomVINInput
+}
+
+input StringDataTypeInput {
+  algorithm: StringAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input StringRefValueInput {
+  columnName: String
+  value: String
+}
+
+input TableInfoFilterInput {
+  and: [TableInfoFilterInput!]
+  or: [TableInfoFilterInput!]
+  name: StringOperationFilterInput
+  tableType: TableTypeOperationFilterInput
+  timeSlicing: TimeSlicingFilterInput
+  database: DatabaseInfoFilterInput
+}
+
+input TableInfoSortInput {
+  name: SortEnumType
+  tableType: SortEnumType
+  timeSlicing: TimeSlicingSortInput
+  database: DatabaseInfoSortInput
+}
+
+input TableInput @oneOf {
+  mockTable: MockTableInput
+  remoteTable: RemoteTableInput
+}
+
+input TableTypeOperationFilterInput {
+  eq: TableType
+  neq: TableType
+  in: [TableType!]
+  nin: [TableType!]
+}
+
+input TimeBasedPrimaryKeyInput {
+  showAsColumn: Boolean! = true
+  lowerBound: String = ""
+  upperBound: String = ""
+  epoch: DateTime!
+  increment: TimeSpan!
+}
+
+input TimeOnlyAlgorithmInput @oneOf {
+  fromValues: RandomTimeOnlyFromValuesInput
+  random: RandomTimeOnlyInput
+  recent: RandomRecentTimeOnlyInput
+  soon: RandomSoonTimeOnlyInput
+}
+
+input TimeOnlyDataTypeInput {
+  algorithm: TimeOnlyAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input TimeSeriesAlgorithmInput @oneOf {
+  index: RowTimeIndexInput
+}
+
+input TimeSeriesDataTypeInput {
+  nullable: Boolean! = false
+  algorithm: TimeSeriesAlgorithmInput!
+}
+
+input TimeSlicingFilterInput {
+  and: [TimeSlicingFilterInput!]
+  or: [TimeSlicingFilterInput!]
+  epoch: ComparableDateTimeOperationFilterInput
+  increment: ComparableTimeSpanOperationFilterInput
+}
+
+input TimeSlicingSortInput {
+  epoch: SortEnumType
+  increment: SortEnumType
+}
+
+input TimeSpanAlgorithmInput @oneOf {
+  random: RandomTimeSpanInput
+}
+
+input TimeSpanDataTypeInput {
+  algorithm: TimeSpanAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input UpdateSettingsInInput {
+  general: GeneralSettingsInput!
+}
+
+input UuidAlgorithmInput @oneOf {
+  random: RandomUuidInput
+  fromValues: RandomUuidFromValuesInput
+}
+
+input UuidDataTypeInput {
+  algorithm: UuidAlgorithmInput
+  nullable: Boolean! = false
+}
+
+input WeightedValueOfDateOnlyInput {
+  value: Date!
+  weight: Float! = 1
+}
+
+input WeightedValueOfDateTimeInput {
+  value: DateTime!
+  weight: Float! = 1
+}
+
+input WeightedValueOfGenderInput {
+  value: Gender!
+  weight: Float! = 1
+}
+
+input WeightedValueOfGuidInput {
+  value: UUID!
+  weight: Float! = 1
+}
+
+input WeightedValueOfInt32Input {
+  value: Int!
+  weight: Float! = 1
+}
+
+input WeightedValueOfSingleInput {
+  value: Float!
+  weight: Float! = 1
+}
+
+input WeightedValueOfStringInput {
+  value: String!
+  weight: Float! = 1
+}
+
+input WeightedValueOfTimeOnlyInput {
+  value: TimeSpan!
+  weight: Float! = 1
+}
+
+enum CurrencyFormatEnum {
+  DESCRIPTION
+  CODE
+  SYMBOL
+  CURRENCY
+}
+
+enum DataTypeEnum {
+  STRING
+  BOOLEAN
+  INTEGER
+  UUID
+  FLOAT
+  DATE_ONLY
+  DATE_TIME
+  DECIMAL
+  GENDER
+  TIME_ONLY
+  TIME_SPAN
+}
+
+enum DateOnlyFormatEnum {
+  SHORT
+  LONG
+  DATE_ONLY
+}
+
+enum DateTimeFormatEnum {
+  SHORT
+  LONG
+  FULL_SHORT
+  FULL_LONG
+  DATE_TIME
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum RemoteSourceType {
+  SQL_SERVER
+  SQL_LITE
+  POSTGRE
+  MY_SQL
+  CSV
+  JSON
+  XML
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+enum TableType {
+  MOCK
+  REMOTE
+}
+
+enum TimeOnlyFormatEnum {
+  SHORT
+  LONG
+  SHORT24_HOUR
+  LONG24_HOUR
+  TIME_ONLY
+}
+
+enum TimeSpanFormatEnum {
+  TIME_SPAN
+  SHORT
+  GENERAL_SHORT
+  GENERAL_LONG
+  DESCRIPTIVE
+}
+
+"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
+directive @defer("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String "Deferred when true." if: Boolean) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The `@oneOf` directive is used within the type system definition language\n to indicate:\n\n - an Input Object is a Oneof Input Object, or\n - an Object Type's Field is a Oneof Field."
+directive @oneOf on INPUT_OBJECT
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
+directive @stream("If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String "The initial elements that shall be send down to the consumer." initialCount: Int! = 0 "Streamed when true." if: Boolean) on FIELD
+
+scalar Any
+
+"The `Date` scalar represents an ISO-8601 compliant date type."
+scalar Date
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+"The built-in `Decimal` scalar type."
+scalar Decimal
+
+"The `TimeSpan` scalar represents an ISO-8601 compliant duration type."
+scalar TimeSpan
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
